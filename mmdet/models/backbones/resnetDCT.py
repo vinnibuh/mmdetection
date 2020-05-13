@@ -7,9 +7,8 @@ from mmcv.cnn import constant_init, kaiming_init
 from mmcv.runner import load_checkpoint
 from torch.nn.modules.batchnorm import _BatchNorm
 
-from mmdet.models.plugins import GeneralizedAttention
-from mmdet.ops import ContextBlock, DeformConv, ModulatedDeformConv
-from ..registry import BACKBONES
+from mmdet.ops import ContextBlock, DeformConv, ModulatedDeformConv, GeneralizedAttention
+from ..builder import BACKBONES
 from ..utils import build_conv_layer, build_norm_layer
 
 
