@@ -7,7 +7,7 @@ from mmcv.parallel import DataContainer as DC
 from mmdet.datasets.pipelines.dct_channel_index import dct_channel_index
 from .formating import to_tensor
 
-from ..registry import PIPELINES
+from ..builder import PIPELINES
 
 @PIPELINES.register_module
 class DefaultFormatBundleDCT(object):
