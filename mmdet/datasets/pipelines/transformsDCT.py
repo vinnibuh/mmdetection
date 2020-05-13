@@ -5,7 +5,7 @@ from imagecorruptions import corrupt
 from numpy import random
 
 from mmdet.core.evaluation.bbox_overlaps import bbox_overlaps
-from ..registry import PIPELINES
+from ..builder import PIPELINES
 from turbojpeg import TurboJPEG
 from jpeg2dct.numpy import load, loads
 from mmdet.datasets.pipelines.dct_channel_index import dct_channel_index
