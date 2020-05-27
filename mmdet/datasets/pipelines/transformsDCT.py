@@ -60,7 +60,7 @@ class ToDCTUpscaledStatic(object):
         _, dct_cb, dct_cr = loads(img_encode_8x)   # 28
 
 
-        plot_dct(dct_y, results['img_info']['filename'])
+        plot_dct(dct_y, results['filename'])
 
         if self.channels == 192:
             results['img'] = np.concatenate((dct_y, dct_cb, dct_cr), axis=2)
