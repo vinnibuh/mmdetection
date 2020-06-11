@@ -9,7 +9,7 @@ from .formating import to_tensor
 
 from ..builder import PIPELINES
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class DefaultFormatBundleDCT(object):
     """Default formatting bundle.
 
@@ -49,7 +49,7 @@ class DefaultFormatBundleDCT(object):
     def __repr__(self):
         return self.__class__.__name__
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class NormalizeDCT(object):
     """Normalize the image.
     Args:
@@ -84,7 +84,7 @@ class NormalizeDCT(object):
             self.mean_y, self.std_y, self.to_rgb)
         return repr_str
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class NormalizeDCTUpscaledStatic(object):
     """Normalize the image.
 
