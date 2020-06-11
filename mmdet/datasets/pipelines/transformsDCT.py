@@ -18,7 +18,7 @@ PAD_MOD = {'constant': cv2.BORDER_CONSTANT,
            'symmetric': cv2.BORDER_REFLECT
            }
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class ToDCT(object):
     def __init__(self):
         self.jpeg = TurboJPEG('/usr/lib/libturbojpeg.so')
@@ -32,7 +32,7 @@ class ToDCT(object):
         results['dct_cr'] = dct_cr
         return results
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class ToDCTUpscaledStatic(object):
     def __init__(self, channels=None, is_test=False, interpolation='BILINEAR'):
         self.jpeg = TurboJPEG('/usr/lib/libturbojpeg.so')
