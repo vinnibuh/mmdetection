@@ -34,7 +34,7 @@ def parse_args():
 
 def retrieve_data_cfg(config_path, skip_type):
     cfg = Config.fromfile(config_path)
-    train_data_cfg = cfg.data.train
+    train_data_cfg = cfg.data.train.dataset
     train_data_cfg['pipeline'] = [
         x for x in train_data_cfg.pipeline if x['type'] not in skip_type
     ]
@@ -56,7 +56,7 @@ def main():
         mmcv.imshow_det_bboxes(
             item['img'],
             item['gt_bboxes'],
-            item['gt_labels'] - 1,
+            item['gt_labels'],
             class_names=dataset.CLASSES,
             show=not args.not_show,
             out_file=filename,
