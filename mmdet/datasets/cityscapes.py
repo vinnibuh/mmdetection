@@ -18,7 +18,8 @@ from .coco import CocoDataset
 @DATASETS.register_module()
 class CityscapesDataset(CocoDataset):
 
-    CLASSES = ('person')
+    CLASSES = ('person', 'rider', 'car', 'truck', 'bus', 'train', 'motorcycle',
+               'bicycle')
 
     def _filter_imgs(self, min_size=32):
         """Filter images too small or without ground truths."""
