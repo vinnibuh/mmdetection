@@ -40,8 +40,8 @@ class ToDCT(object):
         if self.channels == 192:
             results['img'] = np.concatenate((dct_y, dct_cb_up, dct_cr_up), axis=2).astype('float32')
         else:
-            results['img'] = np.concatenate((dct_y[:, :, self.subset_y], dct_cb[:, :, self.subset_cb],
-                                             dct_cr[:, :, self.subset_cr]), axis=2).astype('float32')
+            results['img'] = np.concatenate((dct_y[:, :, self.subset_y], dct_cb_up[:, :, self.subset_cb],
+                                             dct_cr_up[:, :, self.subset_cr]), axis=2).astype('float32')
                       
         return results
 
