@@ -19,17 +19,30 @@ PAD_MOD = {'constant': cv2.BORDER_CONSTANT,
            }
 
 @PIPELINES.register_module()
-class ToDCT(object):
+class ToDCT(object, channels=192):
     def __init__(self):
+        self.channels = channels
         self.jpeg = TurboJPEG('/usr/lib/libturbojpeg.so')
+        self.subset_channel_index = dct_channel_index
+        self.subset_y = self.subset_channel_index[channels][0]
+        self.subset_cb = self.subset_channel_index[channels][1]
+        self.subset_cr = self.subset_channel_index[channels][2]   
 
     def __call__(self, results):
         img = np.ascontiguousarray(results['img'], dtype="uint8")
         img_encode = self.jpeg.encode(img, quality=100, jpeg_subsample=2)
         dct_y, dct_cb, dct_cr = loads(img_encode)   # 28
-        results['dct_y'] = dct_y
-        results['dct_cb'] = dct_cb
-        results['dct_cr'] = dct_cr
+        chrome_w, chrome_h = dct_cb.shape[:-1]
+
+        dct_cb_up = cv2.resize(dct_cb, dsize=(chrome_h*2, chrome_w*2), interpolation=cv2.INTER_LINEAR)
+        dct_cr_up = cv2.resize(dct_cr, dsize=(chrome_h*2, chrome_w*2), interpolation=cv2.INTER_LINEAR)
+           
+        if self.channels == 192:
+            results['img'] = np.concatenate((dct_y, dct_cb_up, dct_cr_up), axis=2).astype('float32')
+        else:
+            results['img'] = np.concatenate((dct_y[:, :, self.subset_y], dct_cb[:, :, self.subset_cb],
+                                             dct_cr[:, :, self.subset_cr]), axis=2).astype('float32')
+                      
         return results
 
 @PIPELINES.register_module()
