@@ -19,8 +19,8 @@ PAD_MOD = {'constant': cv2.BORDER_CONSTANT,
            }
 
 @PIPELINES.register_module()
-class ToDCT(object, channels=192):
-    def __init__(self):
+class ToDCT(object):
+    def __init__(self, channels=192):
         self.channels = channels
         self.jpeg = TurboJPEG('/usr/lib/libturbojpeg.so')
         self.subset_channel_index = dct_channel_index
