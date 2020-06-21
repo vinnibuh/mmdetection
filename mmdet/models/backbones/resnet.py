@@ -352,6 +352,7 @@ class ResNet(nn.Module):
                  out_indices=(0, 1, 2, 3),
                  style='pytorch',
                  deep_stem=False,
+                 without_stem=False,
                  avg_down=False,
                  frozen_stages=-1,
                  conv_cfg=None,
@@ -376,6 +377,7 @@ class ResNet(nn.Module):
         assert max(out_indices) < num_stages
         self.style = style
         self.deep_stem = deep_stem
+        self.without_stem = without_stem
         self.avg_down = avg_down
         self.frozen_stages = frozen_stages
         self.conv_cfg = conv_cfg
@@ -392,8 +394,9 @@ class ResNet(nn.Module):
         self.stage_blocks = stage_blocks[:num_stages]
         self.inplanes = base_channels
 
-        self._make_stem_layer(in_channels, base_channels)
-
+        if not self.without_stem:
+            self._make_stem_layer(in_channels, base_channels)
+        
         self.res_layers = []
         for i, num_blocks in enumerate(self.stage_blocks):
             stride = strides[i]
@@ -545,15 +548,16 @@ class ResNet(nn.Module):
 
     def _freeze_stages(self):
         if self.frozen_stages >= 0:
-            if self.deep_stem:
-                self.stem.eval()
-                for param in self.stem.parameters():
-                    param.requires_grad = False
-            else:
-                self.norm1.eval()
-                for m in [self.conv1, self.norm1]:
-                    for param in m.parameters():
+            if not self.without_stem: 
+                if self.deep_stem:
+                    self.stem.eval()
+                    for param in self.stem.parameters():
                         param.requires_grad = False
+                else:
+                    self.norm1.eval()
+                    for m in [self.conv1, self.norm1]:
+                        for param in m.parameters():
+                            param.requires_grad = False
 
         for i in range(1, self.frozen_stages + 1):
             m = getattr(self, f'layer{i}')
@@ -588,14 +592,18 @@ class ResNet(nn.Module):
             raise TypeError('pretrained must be a str or None')
 
     def forward(self, x):
-        if self.deep_stem:
-            x = self.stem(x)
-        else:
-            x = self.conv1(x)
-            x = self.norm1(x)
-            x = self.relu(x)
-        x = self.maxpool(x)
         outs = []
+        if -1 in self.out_indices:
+            outs.append(x)
+        if not self.without_stem:
+            if self.deep_stem:
+                x = self.stem(x)
+            else:
+                x = self.conv1(x)
+                x = self.norm1(x)
+                x = self.relu(x)
+            x = self.maxpool(x)
+        
         for i, layer_name in enumerate(self.res_layers):
             res_layer = getattr(self, layer_name)
             x = res_layer(x)
